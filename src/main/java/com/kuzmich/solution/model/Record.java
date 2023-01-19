@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -24,5 +24,5 @@ public class Record {
     @Column(name = "DESCRIPTION")
     private String description;
     @Column(name = "UPDATED_TIMESTAMP")
-    private LocalDate timestamp;
+    private Date timestamp;
 }
