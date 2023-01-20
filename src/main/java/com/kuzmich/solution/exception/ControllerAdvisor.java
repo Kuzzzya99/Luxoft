@@ -25,6 +25,7 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
             UnformatableDateException ex, WebRequest request) {
         return new ResponseEntity<>(createBody(ex), HttpStatus.BAD_REQUEST);
     }
+
     @ExceptionHandler(InvalidFileFormatException.class)
     public ResponseEntity<Object> handleWeatherbitCallException(
             InvalidFileFormatException ex, WebRequest request) {
