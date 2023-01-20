@@ -7,9 +7,10 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface RecordRepository extends JpaRepository<Record, Integer>  {
+public interface RecordRepository extends JpaRepository<Record, Integer> {
     @Override
     Optional<Record> findById(Integer id);
+
     @Override
     void deleteById(Integer id);
 }

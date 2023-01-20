@@ -8,6 +8,8 @@ import com.kuzmich.solution.service.ValidationService;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,6 +31,7 @@ public class RecordServiceImpl implements RecordService {
     private static final String NAME = "NAME";
     private static final String DESCRIPTION = "DESCRIPTION";
     private static final String UPDATED_TIMESTAMP = "UPDATED_TIMESTAMP";
+    private static final Logger logger = LoggerFactory.getLogger(RecordServiceImpl.class);
 
     @Override
     public void parseCsv(MultipartFile multipartFile) throws IOException {
@@ -39,6 +42,7 @@ public class RecordServiceImpl implements RecordService {
         Iterable<CSVRecord> csvRecords = csvParser.getRecords();
         for (CSVRecord csvRecord : csvRecords) {
             if (validationService.validatePrimaryKey(csvRecord)) {
+                logger.debug("Primary key is valid for record={}", csvRecord);
                 recordRepository.save(buildRecord(csvRecord));
             }
         }
@@ -46,7 +50,10 @@ public class RecordServiceImpl implements RecordService {
 
     @Override
     public Record findRecordById(Integer id) {
-        return recordRepository.findById(id).orElseThrow(() -> new NoSuchRecordException("No record found with such id"));
+        return recordRepository.findById(id).orElseThrow(() -> {
+            logger.error("No record found with such id={}", id);
+            throw new NoSuchRecordException("No record found with such id");
+        });
     }
 
     @Override
@@ -54,6 +61,7 @@ public class RecordServiceImpl implements RecordService {
         try {
             recordRepository.deleteById(id);
         } catch (Exception exception) {
+            logger.error("Cant delete record, no record found with such id={}", id);
             throw new NoSuchRecordException("No record found with such id");
         }
     }

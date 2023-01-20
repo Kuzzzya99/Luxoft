@@ -3,6 +3,8 @@ package com.kuzmich.solution.service.impl;
 import com.kuzmich.solution.exception.UnformatableDateException;
 import com.kuzmich.solution.service.ValidationService;
 import org.apache.commons.csv.CSVRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,7 +17,9 @@ public class ValidationServiceImpl implements ValidationService {
     private static final String TYPE = "text/csv";
     private static final String PRIMARY_KEY = "PRIMARY_KEY";
     private static final String EMPTY_STRING = "";
-    public boolean isCsvFile(MultipartFile file){
+    private static final Logger logger = LoggerFactory.getLogger(ValidationServiceImpl.class);
+
+    public boolean isCsvFile(MultipartFile file) {
         if (!TYPE.equals(file.getContentType())) {
             return false;
         }
@@ -38,6 +42,7 @@ public class ValidationServiceImpl implements ValidationService {
             try {
                 return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(string);
             } catch (ParseException e) {
+                logger.error("Wrong date or date format, string={}", string);
                 throw new UnformatableDateException("Wrong date or date format. Please use yyyy-MM-dd HH:mm:ss");
             }
         }
