@@ -15,4 +15,6 @@ public interface ValidationService {
     String returnValueOrNull(String string);
 
     Date convertStringToDate(String string);
+
+    boolean validateDate(CSVRecord csvRecord);
 }

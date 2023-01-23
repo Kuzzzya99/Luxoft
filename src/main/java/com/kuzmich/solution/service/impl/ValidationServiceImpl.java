@@ -1,8 +1,8 @@
 package com.kuzmich.solution.service.impl;
 
-import com.kuzmich.solution.exception.UnformatableDateException;
 import com.kuzmich.solution.service.ValidationService;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -16,6 +16,7 @@ import java.util.Date;
 public class ValidationServiceImpl implements ValidationService {
     private static final String TYPE = "text/csv";
     private static final String PRIMARY_KEY = "PRIMARY_KEY";
+    private static final String UPDATED_TIMESTAMP = "UPDATED_TIMESTAMP";
     private static final String EMPTY_STRING = "";
     private static final Logger logger = LoggerFactory.getLogger(ValidationServiceImpl.class);
 
@@ -27,8 +28,10 @@ public class ValidationServiceImpl implements ValidationService {
     }
 
     public boolean validatePrimaryKey(CSVRecord csvRecord) {
-        return !csvRecord.get(PRIMARY_KEY).equals(EMPTY_STRING);
+        String primaryKey = csvRecord.get(PRIMARY_KEY);
+        return !primaryKey.equals(EMPTY_STRING) && NumberUtils.isParsable(primaryKey);
     }
+
 
     public String returnValueOrNull(String string) {
         if (!string.equals(EMPTY_STRING)) {
@@ -43,10 +46,23 @@ public class ValidationServiceImpl implements ValidationService {
                 return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(string);
             } catch (ParseException e) {
                 logger.error("Wrong date or date format, string={}", string);
-                throw new UnformatableDateException("Wrong date or date format. Please use yyyy-MM-dd HH:mm:ss");
             }
         }
         return null;
     }
 
+    public boolean validateDate(CSVRecord csvRecord) {
+        String date = csvRecord.get(UPDATED_TIMESTAMP);
+
+        if (!date.equals(EMPTY_STRING)) {
+            try {
+                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date);
+                return true;
+            } catch (ParseException e) {
+                logger.error("Wrong date or date format, date={}", date);
+                return false;
+            }
+        }
+        return true;
+    }
 }

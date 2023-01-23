@@ -41,7 +41,7 @@ public class RecordServiceImpl implements RecordService {
                 csvFormat);
         Iterable<CSVRecord> csvRecords = csvParser.getRecords();
         for (CSVRecord csvRecord : csvRecords) {
-            if (validationService.validatePrimaryKey(csvRecord)) {
+            if (validationService.validatePrimaryKey(csvRecord) && validationService.validateDate(csvRecord)) {
                 logger.debug("Primary key is valid for record={}", csvRecord);
                 recordRepository.save(buildRecord(csvRecord));
             }
