@@ -1,8 +1,11 @@
 # README #
 ### Requirements ###
 For building and running the application you need:
+
 Java 17
+
 Maven 3
+
 PostgreSQL Server 15
 
 ### Application details ###
